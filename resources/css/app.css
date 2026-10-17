@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "element-plus/dist/index.css";
+
+/* Custom utility styling to match image aesthetics */
+body {
+    background-color: #f3f4f6;
+    font-family: 'Inter', sans-serif;
+}
