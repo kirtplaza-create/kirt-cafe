@@ -1,8 +1,41 @@
 @import "tailwindcss";
 @import "element-plus/dist/index.css";
 
-/* Custom utility styling to match image aesthetics */
-body {
-    background-color: #f3f4f6;
-    font-family: 'Inter', sans-serif;
+/* Prevent horizontal page shifts on route transitions */
+html, main {
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+}
+
+/* Force VT323 across all text, inputs, select fields, and buttons */
+@layer base {
+    body, h1, h2, h3, h4, h5, h6, p, span, div, a, button, input, select, textarea {
+        font-family: 'VT323', monospace !important;
+        letter-spacing: 0.75px;
+    }
+
+    /* Target inputs and selects specifically to override browser defaults */
+    input, select, textarea, button {
+        font-family: 'VT323', monospace !important;
+        font-size: 1.25rem !important; /* 20px base font size for sharp pixel readability */
+    }
+}
+
+/* Custom Cozy Pixel Utility Classes */
+.pixel-card {
+    background-color: #fffcf7;
+    border: 3px solid #6b4e3d;
+    box-shadow: 4px 4px 0px #4a3b32;
+    border-radius: 12px;
+}
+
+.pixel-button-primary {
+    background-color: #539d6c; /* Rich Emerald Green */
+    color: #ffffff;
+    border: 2px solid #2d5a36;
+    box-shadow: 2px 2px 0px #1e3d24;
+}
+
+.pixel-button-primary:hover {
+    background-color: #366036;
 }

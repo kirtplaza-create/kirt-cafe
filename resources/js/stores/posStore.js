@@ -1,3 +1,4 @@
+// resources/js/stores/posStore.js
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
@@ -7,26 +8,26 @@ export const usePosStore = defineStore('pos', {
         categories: ['All Menu', 'Coffee', 'Tea', 'Non Coffee', 'Sandwich', 'Snack'],
         menuItems: [],
         cart: [],
-        taxRate: 0.11,
         selectedTable: '',
         orderType: 'Dine In',
-        orderNumber: '#' + Math.floor(100000 + Math.random() * 900000) // Live order ID
+        paymentMethod: 'Cash',
+        orderNumber: '#' + Math.floor(100000 + Math.random() * 900000)
     }),
+
     getters: {
         filteredItems: (state) => {
             if (state.selectedCategory === 'All Menu') return state.menuItems;
             return state.menuItems.filter(item => item.category === state.selectedCategory);
         },
         subTotal: (state) => {
-        return state.cart.reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
+            return state.cart.reduce((total, item) => total + (Number(item.unitPrice || 0) * item.quantity), 0);
         },
-        taxAmount() {
-            return this.subTotal * 0.12; // 12% PH VAT
-        },
+        // Removed taxAmount getter entirely
         grandTotal() {
-            return this.subTotal + this.taxAmount;
+            return this.subTotal; // Grand total is now equal to subtotal
         }
     },
+
     actions: {
         async fetchMenuItems() {
             try {
@@ -36,32 +37,42 @@ export const usePosStore = defineStore('pos', {
                 console.error('Failed to fetch menu items:', error);
             }
         },
-        addToCart(product) {
-            const existingItem = this.cart.find(item => item.id === product.id);
+
+        addToCart(product, selectedOption = null) {
+            const optionTag = selectedOption || (Array.isArray(product.options) ? product.options[0] : product.options) || 'Default';
+
+            const existingItem = this.cart.find(
+                item => item.id === product.id && item.tag === optionTag
+            );
+
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
                 this.cart.push({
                     id: product.id,
                     name: product.name,
-                    tag: product.options?.[0] || 'Default',
-                    unitPrice: product.price,
+                    tag: optionTag,
+                    image: product.image,
+                    unitPrice: Number(product.price || product.unitPrice || 0),
                     quantity: 1
                 });
             }
         },
-        updateQuantity(itemId, delta) {
-            const item = this.cart.find(i => i.id === itemId);
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) {
-                    this.cart = this.cart.filter(i => i.id !== itemId);
+
+        updateQuantity(itemId, delta, selectedOption = null) {
+            const index = this.cart.findIndex(item => {
+                const matchesId = item.id === itemId;
+                const matchesOption = selectedOption ? item.tag === selectedOption : true;
+                return matchesId && matchesOption;
+            });
+
+            if (index !== -1) {
+                this.cart[index].quantity += delta;
+                if (this.cart[index].quantity <= 0) {
+                    this.cart.splice(index, 1);
                 }
             }
         },
-        // resources/js/stores/posStore.js
-
-        // resources/js/stores/posStore.js
 
         async placeOrder(customerName) {
             if (this.cart.length === 0) return alert('Cart is empty!');
@@ -74,16 +85,15 @@ export const usePosStore = defineStore('pos', {
                     order_type: this.orderType || 'Dine In',
                     payment_method: this.paymentMethod || 'Cash',
                     sub_total: this.subTotal,
-                    tax_amount: this.taxAmount,
+                    tax_amount: 0, // Set tax to 0 in payload
                     grand_total: this.grandTotal,
                     cart: this.cart
                 };
 
-                const response = await axios.post('/api/orders', payload);
+                await axios.post('/api/orders', payload);
 
                 alert(`Order ${this.orderNumber} successfully placed!`);
 
-                // Clear cart & reset order details
                 this.cart = [];
                 this.orderNumber = '#' + Math.floor(100000 + Math.random() * 900000);
                 this.selectedTable = '';
