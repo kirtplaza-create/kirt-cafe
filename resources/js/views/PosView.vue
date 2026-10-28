@@ -28,21 +28,21 @@
             </div>
 
             <!-- Category Filter Pills (Compact Grid) -->
-<div class="grid grid-cols-6 gap-2 mb-6 flex-shrink-0">
-    <button 
-        v-for="cat in store.categories" 
-        :key="cat"
-        @click="store.selectedCategory = cat"
-        :class="[
-            'py-2 px-1 text-center rounded-xl text-base font-bold border-2 transition-all duration-150 cursor-pointer leading-tight',
-            store.selectedCategory === cat 
-                ? 'bg-[#e2f0d9] border-[#539d6c] text-[#2d5a36] shadow-[2px_2px_0px_#366036]' 
-                : 'bg-[#fbf6f0] border-[#6b4e3d] text-[#6b4e3d] hover:bg-[#f4eae1]'
-        ]"
-    >
-        {{ cat }}
-    </button>
-</div>
+            <div class="grid grid-cols-6 gap-2 mb-6 flex-shrink-0">
+                <button 
+                    v-for="cat in store.categories" 
+                    :key="cat"
+                    @click="store.selectedCategory = cat"
+                    :class="[
+                        'py-2 px-1 text-center rounded-xl text-base font-bold border-2 transition-all duration-150 cursor-pointer leading-tight',
+                        store.selectedCategory === cat 
+                            ? 'bg-[#e2f0d9] border-[#539d6c] text-[#2d5a36] shadow-[2px_2px_0px_#366036]' 
+                            : 'bg-[#fbf6f0] border-[#6b4e3d] text-[#6b4e3d] hover:bg-[#f4eae1]'
+                    ]"
+                >
+                    {{ cat }}
+                </button>
+            </div>
 
             <!-- Menu Grid -->
             <div class="grid grid-cols-3 gap-4 auto-rows-max items-start">
@@ -68,53 +68,51 @@
                         </div>
                     </div>
 
-                    <!-- Options & Counter -->
-                    <!-- Options & Counter Row -->
-<!-- Options & Counter Section (Stacked & Uniform) -->
-<div class="mt-3 pt-2 border-t-2 border-[#e6d8cb] space-y-2">
-    
-    <!-- Row 1: Option Pills (Left Aligned) -->
-    <div class="flex items-center gap-1.5 flex-wrap min-h-[28px]">
-        <button 
-            v-for="opt in getParsedOptions(item.options)" 
-            :key="opt" 
-            @click.stop="selectOption(item.id, opt)"
-            type="button"
-            :class="[
-                'h-7 px-2.5 text-base font-bold rounded-lg border-2 flex items-center justify-center transition-all cursor-pointer whitespace-nowrap font-[\'VT323\']',
-                getActiveOption(item) === opt 
-                    ? 'bg-[#e2f0d9] border-[#539d6c] text-[#2d5a36] shadow-[1px_1px_0px_#366036]' 
-                    : 'bg-[#fbf6f0] border-[#6b4e3d] text-[#6b4e3d] hover:bg-[#f4eae1]'
-            ]"
-        >
-            {{ opt }}
-        </button>
-    </div>
+                    <!-- Options & Counter Section (Stacked & Uniform) -->
+                    <div class="mt-3 pt-2 border-t-2 border-[#e6d8cb] space-y-2">
+                        
+                        <!-- Row 1: Option Pills (Left Aligned) -->
+                        <div class="flex items-center gap-1.5 flex-wrap min-h-[28px]">
+                            <button 
+                                v-for="opt in getParsedOptions(item.options)" 
+                                :key="opt" 
+                                @click.stop="selectOption(item.id, opt)"
+                                type="button"
+                                :class="[
+                                    'h-7 px-2.5 text-base font-bold rounded-lg border-2 flex items-center justify-center transition-all cursor-pointer whitespace-nowrap font-[\'VT323\']',
+                                    getActiveOption(item) === opt 
+                                        ? 'bg-[#e2f0d9] border-[#539d6c] text-[#2d5a36] shadow-[1px_1px_0px_#366036]' 
+                                        : 'bg-[#fbf6f0] border-[#6b4e3d] text-[#6b4e3d] hover:bg-[#f4eae1]'
+                                ]"
+                            >
+                                {{ opt }}
+                            </button>
+                        </div>
 
-    <!-- Row 2: Quantity Counter (Aligned Right) -->
-    <div class="flex items-center justify-end">
-        <div class="flex items-center gap-1.5 bg-[#fbf6f0] border-2 border-[#6b4e3d] rounded-lg px-2 h-7">
-            <button 
-                @click.stop="handleUpdateQuantity(item, -1)"
-                type="button"
-                class="w-5 h-5 bg-[#fffcf7] border border-[#6b4e3d] rounded flex items-center justify-center text-base font-bold text-[#4a3b32] hover:bg-[#e2f0d9] cursor-pointer font-['VT323']"
-            >
-                -
-            </button>
-            <span class="text-base font-bold px-1 min-w-[16px] text-center text-[#4a3b32] font-['VT323']">
-                {{ getItemQuantity(item) }}
-            </span>
-            <button 
-                @click.stop="handleAddToCart(item)"
-                type="button"
-                class="w-5 h-5 bg-[#539d6c] border border-[#2d5a36] text-white rounded flex items-center justify-center text-base font-bold hover:bg-[#366036] cursor-pointer font-['VT323']"
-            >
-                +
-            </button>
-        </div>
-    </div>
+                        <!-- Row 2: Quantity Counter (Aligned Right) -->
+                        <div class="flex items-center justify-end">
+                            <div class="flex items-center gap-1.5 bg-[#fbf6f0] border-2 border-[#6b4e3d] rounded-lg px-2 h-7">
+                                <button 
+                                    @click.stop="handleUpdateQuantity(item, -1)"
+                                    type="button"
+                                    class="w-5 h-5 bg-[#fffcf7] border border-[#6b4e3d] rounded flex items-center justify-center text-base font-bold text-[#4a3b32] hover:bg-[#e2f0d9] cursor-pointer font-['VT323']"
+                                >
+                                    -
+                                </button>
+                                <span class="text-base font-bold px-1 min-w-[16px] text-center text-[#4a3b32] font-['VT323']">
+                                    {{ getItemQuantity(item) }}
+                                </span>
+                                <button 
+                                    @click.stop="handleAddToCart(item)"
+                                    type="button"
+                                    class="w-5 h-5 bg-[#539d6c] border border-[#2d5a36] text-white rounded flex items-center justify-center text-base font-bold hover:bg-[#366036] cursor-pointer font-['VT323']"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
 
-</div>
+                    </div>
                 </div>
 
                 <!-- Empty Filter Message -->

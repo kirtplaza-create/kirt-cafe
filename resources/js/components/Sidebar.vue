@@ -5,9 +5,9 @@
             <!-- Brand Logo / Header -->
             <div class="flex items-center gap-3 mb-8 pb-4 border-b-2 border-[#e6d8cb]">
                 <div class="w-10 h-10 rounded-xl bg-[#539d6c] border-2 border-[#2d5a36] flex items-center justify-center text-white font-bold text-2xl shadow-[2px_2px_0px_#1e3d24]">
-                    K
+                    B
                 </div>
-                <span class="text-2xl font-bold text-[#4a3b32]">Kirt Cafe</span>
+                <span class="text-2xl font-bold text-[#4a3b32]">Bit & Brew</span>
             </div>
 
             <!-- Navigation Links -->

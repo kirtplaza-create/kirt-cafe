@@ -10,7 +10,6 @@
             <div class="flex items-center justify-between mb-6 pb-4 border-b-2 border-[#e6d8cb] flex-shrink-0">
                 <div>
                     <h1 class="text-2xl font-bold text-[#4a3b32]">Order List</h1>
-                    <p class="text-sm font-bold text-[#8c6d58]">Manage live kitchen and customer orders</p>
                 </div>
                 
                 <button 

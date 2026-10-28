@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirt Cafe POS</title>
+    <title>Bit & Brew</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Add inside <head> of app.blade.php -->
    <link rel="preconnect" href="https://fonts.googleapis.com">

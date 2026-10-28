@@ -75,7 +75,9 @@ export const usePosStore = defineStore('pos', {
         },
 
         async placeOrder(customerName) {
-            if (this.cart.length === 0) return alert('Cart is empty!');
+            if (this.cart.length === 0) {
+                throw new Error('Cart is empty!');
+            }
 
             try {
                 const payload = {
@@ -85,21 +87,22 @@ export const usePosStore = defineStore('pos', {
                     order_type: this.orderType || 'Dine In',
                     payment_method: this.paymentMethod || 'Cash',
                     sub_total: this.subTotal,
-                    tax_amount: 0, // Set tax to 0 in payload
+                    tax_amount: 0,
                     grand_total: this.grandTotal,
                     cart: this.cart
                 };
 
                 await axios.post('/api/orders', payload);
 
-                alert(`Order ${this.orderNumber} successfully placed!`);
-
+                // Reset store state after successful placement
                 this.cart = [];
                 this.orderNumber = '#' + Math.floor(100000 + Math.random() * 900000);
                 this.selectedTable = '';
+
+                return true;
             } catch (error) {
                 console.error('Order submission error:', error.response?.data || error.message);
-                alert('Failed to place order. Check console for details.');
+                throw error;
             }
         }
     }

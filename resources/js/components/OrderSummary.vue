@@ -51,7 +51,7 @@
                             <img 
                                 :src="item.image || 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=100'" 
                                 :alt="item.name"
-                                class="w-full h-full object-cover" 
+                                class="w-full h-full object-cover pixel-img" 
                             />
                         </div>
                         <div>
@@ -123,20 +123,61 @@
 
             <!-- Checkout Button -->
             <button 
-                @click="store.placeOrder(customerName)" 
+                @click="handleCheckout" 
                 class="w-full bg-[#539d6c] border-2 border-[#2d5a36] text-white font-bold py-2 rounded-xl text-3xl hover:bg-[#366036] shadow-[3px_3px_0px_#1e3d24] transition-all mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 :disabled="store.cart.length === 0"
             >
                 Place Order
             </button>
         </div>
+
+        <!-- Pixel Floating Modal -->
+        <PixelModal 
+            :show="showModal" 
+            title="Success!"
+            :message="modalMessage" 
+            @close="handleModalClose" 
+        />
     </aside>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { usePosStore } from '@/stores/posStore';
+import PixelModal from './PixelModal.vue'; // Adjust path if PixelModal is located elsewhere in components
 
 const store = usePosStore();
 const customerName = ref('');
+
+// Modal Reactive State
+const showModal = ref(false);
+const modalMessage = ref('');
+
+const handleCheckout = async () => {
+    // Current order number before resetting
+    const orderNum = store.orderNumber?.startsWith('#') 
+        ? store.orderNumber 
+        : `#${store.orderNumber || '000000'}`;
+
+    // Execute order logic from posStore
+    if (typeof store.placeOrder === 'function') {
+        await store.placeOrder(customerName.value);
+    }
+
+    // Set message & trigger retro floating modal
+    modalMessage.value = `Order ${orderNum} successfully placed!`;
+    showModal.value = true;
+};
+
+const handleModalClose = () => {
+    showModal.value = false;
+    customerName.value = ''; // Reset customer field on close
+};
 </script>
+
+<style scoped>
+.pixel-img {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+</style>
