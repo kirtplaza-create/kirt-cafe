@@ -20,6 +20,20 @@ class ProductSeeder extends Seeder
                 'image' => '/images/americano.png', 
                 'options' => ['Cold', 'Hot']
             ],
+            [
+                'name' => 'Spanish Latte', 
+                'category' => 'Coffee', 
+                'price' => 95.00, 
+                'image' => '/images/spanishLatte.png', 
+                'options' => ['Cold', 'Hot']
+            ],
+            [
+                'name' => 'Matcha Latte', 
+                'category' => 'Non Coffee', 
+                'price' => 90.00, 
+                'image' => '/images/matcha.png', 
+                'options' => ['Cold', 'Hot']
+            ]
             
         ];
 
