@@ -121,20 +121,26 @@
                 </button>
             </div>
 
-            <!-- Checkout Button -->
+            <!-- Checkout Button with Loading State -->
             <button 
                 @click="handleCheckout" 
-                class="w-full bg-[#539d6c] border-2 border-[#2d5a36] text-white font-bold py-2 rounded-xl text-3xl hover:bg-[#366036] shadow-[3px_3px_0px_#1e3d24] transition-all mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-                :disabled="store.cart.length === 0"
+                class="w-full bg-[#539d6c] border-2 border-[#2d5a36] text-white font-bold py-2 rounded-xl text-3xl hover:bg-[#366036] shadow-[3px_3px_0px_#1e3d24] transition-all mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2"
+                :disabled="store.cart.length === 0 || isSubmitting"
             >
-                Place Order
+                <span v-if="isSubmitting" class="flex items-center gap-2">
+                    <span class="inline-block w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Processing...
+                </span>
+                <span v-else>
+                    Place Order
+                </span>
             </button>
         </div>
 
         <!-- Pixel Floating Modal -->
         <PixelModal 
             :show="showModal" 
-            title="Success!"
+            :title="modalTitle"
             :message="modalMessage" 
             @close="handleModalClose" 
         />
@@ -144,34 +150,49 @@
 <script setup>
 import { ref } from 'vue';
 import { usePosStore } from '@/stores/posStore';
-import PixelModal from './PixelModal.vue'; // Adjust path if PixelModal is located elsewhere in components
+import PixelModal from './PixelModal.vue';
 
 const store = usePosStore();
 const customerName = ref('');
 
-// Modal Reactive State
+// UI Control States
+const isSubmitting = ref(false);
 const showModal = ref(false);
+const modalTitle = ref('Success!');
 const modalMessage = ref('');
 
 const handleCheckout = async () => {
-    // Current order number before resetting
+    if (store.cart.length === 0 || isSubmitting.value) return;
+
+    isSubmitting.value = true;
+
+    // Capture order number before store execution resets it
     const orderNum = store.orderNumber?.startsWith('#') 
         ? store.orderNumber 
         : `#${store.orderNumber || '000000'}`;
 
-    // Execute order logic from posStore
-    if (typeof store.placeOrder === 'function') {
-        await store.placeOrder(customerName.value);
-    }
+    try {
+        if (typeof store.placeOrder === 'function') {
+            await store.placeOrder(customerName.value);
+        }
 
-    // Set message & trigger retro floating modal
-    modalMessage.value = `Order ${orderNum} successfully placed!`;
-    showModal.value = true;
+        modalTitle.value = 'Success!';
+        modalMessage.value = `Order ${orderNum} successfully placed!`;
+        showModal.value = true;
+    } catch (error) {
+        modalTitle.value = 'Error';
+        modalMessage.value = error.response?.data?.message || error.message || 'Failed to place order. Please try again.';
+        showModal.value = true;
+    } finally {
+        isSubmitting.value = false;
+    }
 };
 
 const handleModalClose = () => {
     showModal.value = false;
-    customerName.value = ''; // Reset customer field on close
+    if (modalTitle.value === 'Success!') {
+        customerName.value = ''; // Reset customer field only on success
+    }
 };
 </script>
 
